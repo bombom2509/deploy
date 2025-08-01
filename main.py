@@ -1,4 +1,5 @@
 import os
+import json
 import requests
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,12 +36,21 @@ async def chat(request: Request):
         "temperature": 0.7
     }
 
+    # Debug logs
+    print("=== Sending request to Together.ai ===")
+    print("Headers:")
+    print(json.dumps(headers, indent=2))
+    print("Payload:")
+    print(json.dumps(payload, indent=2))
+
     try:
         response = requests.post(
             "https://api.together.xyz/v1/chat/completions",
             headers=headers,
             json=payload
         )
+        print("Status code:", response.status_code)
+        print("Response body:", response.text)
         response.raise_for_status()
         return {"response": response.json()["choices"][0]["message"]["content"]}
     except Exception as e:
