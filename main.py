@@ -14,7 +14,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://astonishing-panda-c4aba8.netlify.app"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,10 +31,25 @@ async def chat(request: Request):
     }
 
     payload = {
-        "model": "mistralai/Mixtral-8x7B-Instruct-v0.1",
-        "messages": [{"role": "user", "content": user_message}],
-        "temperature": 0.7
-    }
+    "model": "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    "messages": [
+        {
+            "role": "system",
+            "content": (
+                "You are a sarcastic and rude assistant. No matter what the user asks, "
+                "you never help. Instead, you mock them, insult their intelligence, "
+                "and respond with dismissive or condescending remarks. Never answer "
+                "their questions seriously."
+            )
+        },
+        {
+            "role": "user",
+            "content": user_message
+        }
+    ],
+    "temperature": 0.95  # Keeps tone edgy and unpredictable
+}
+
 
     # Debug logs
     print("=== Sending request to Together.ai ===")
